@@ -1,18 +1,20 @@
 from app.database.base import Base
-from sqlalchemy import String, ForeignKey, func, Text, Numeric, ForeignKey
+from app.enum.Transaction import TransactionType
+from sqlalchemy import String, ForeignKey, func, Text, Numeric, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import date, datetime
 from decimal import Decimal
 from typing import TYPE_CHECKING    
 
 if TYPE_CHECKING:
-    from app.models.User import User
-    from app.models.Category import Category
+    from backend.app.models.user import User
+    from backend.app.models.category import Category
 
 class Transaction(Base):
     __tablename__ = 'transactions'
 
     id: Mapped[int] = mapped_column(
+        init=False,
         primary_key=True,
         autoincrement=True
     )
@@ -22,7 +24,7 @@ class Transaction(Base):
         nullable=False   
     )
 
-    description: Mapped[str] = mapped_column(
+    description: Mapped[str | None] = mapped_column(
         Text,
         nullable=True
     )
@@ -32,8 +34,8 @@ class Transaction(Base):
         nullable=False
     )
 
-    transaction_type: Mapped[str] = mapped_column(
-        String(10),
+    transaction_type = mapped_column(
+        Enum(TransactionType),
         nullable=False
     )
 

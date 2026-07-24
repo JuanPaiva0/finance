@@ -5,8 +5,8 @@ from datetime import datetime
 from typing import TYPE_CHECKING, List
 
 if TYPE_CHECKING:
-    from app.models.User import User
-    from app.models.Transaction import Transaction
+    from backend.app.models.user import User
+    from backend.app.models.transaction import Transaction
 
 class Category(Base):
     __tablename__ = 'categories'
@@ -19,11 +19,6 @@ class Category(Base):
 
     name: Mapped[str] = mapped_column(
         String(100),
-        nullable=False
-    )
-
-    category_type: Mapped[str] = mapped_column(
-        String(10),
         nullable=False
     )
 

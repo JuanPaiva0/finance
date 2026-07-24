@@ -5,8 +5,8 @@ from sqlalchemy import func, String
 from typing import List, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from app.models.Category import Category
-    from app.models.Transaction import Transaction
+    from backend.app.models.category import Category
+    from backend.app.models.transaction import Transaction
 
 class User(Base):
     __tablename__ = 'users'
