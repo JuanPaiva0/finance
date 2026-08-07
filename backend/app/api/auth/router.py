@@ -1,14 +1,17 @@
 from fastapi import APIRouter
+from app.schemas.Auth import LoginRequest, RegisterRequest
+from app.api.auth.service import AuthService
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
+service = AuthService()
 
 @auth_router.post("/register")
-async def register():
-    pass
+async def register(register_request: RegisterRequest):
+    return await service.register(register_request)
 
 @auth_router.post("/login")
-async def login():
-    pass
+async def login(login_request: LoginRequest):
+    return await service.login(login_request)
 
 @auth_router.post("/refresh")
 async def refresh():

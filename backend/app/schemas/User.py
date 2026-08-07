@@ -6,7 +6,7 @@ class UserBase(BaseModel):
     email: EmailStr
 
 class UserCreate(UserBase):
-    password: str
+    hashed_password: str
 
 class UserUpdate(BaseModel):
     model_config = ConfigDict(extra="forbid")

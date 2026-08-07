@@ -7,14 +7,13 @@ from decimal import Decimal
 from typing import TYPE_CHECKING    
 
 if TYPE_CHECKING:
-    from backend.app.models.user import User
-    from backend.app.models.category import Category
+    from app.models.user import User
+    from app.models.category import Category
 
 class Transaction(Base):
     __tablename__ = 'transactions'
 
     id: Mapped[int] = mapped_column(
-        init=False,
         primary_key=True,
         autoincrement=True
     )

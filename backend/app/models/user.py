@@ -5,14 +5,13 @@ from sqlalchemy import func, String
 from typing import List, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from backend.app.models.category import Category
-    from backend.app.models.transaction import Transaction
+    from app.models.category import Category 
+    from app.models.transaction import Transaction
 
 class User(Base):
     __tablename__ = 'users'
 
     id: Mapped[int] = mapped_column(
-        init=False, 
         primary_key=True, 
         autoincrement=True
     )
@@ -36,19 +35,16 @@ class User(Base):
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
 
     updated_at: Mapped[datetime] = mapped_column(
-        init=False, 
         server_default=func.now(),
         onupdate=func.now()
     )
 
     categories: Mapped[List["Category"]] = relationship(
-        "Category",
         back_populates="user",
         cascade="all, delete-orphan"
     )
 
     transactions: Mapped[List["Transaction"]] = relationship(
-        "Transaction",
         back_populates="user",
         cascade="all, delete-orphan"
     )
