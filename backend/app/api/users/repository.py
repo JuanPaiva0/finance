@@ -11,6 +11,13 @@ class UserRepository:
             user = result.scalar_one_or_none()
         return user
 
+    async def get_user_by_id(self, user_id: int) -> User | None:
+        async with SessionLocal() as session:
+            stmt = select(User).where(User.id == user_id)
+            result = await session.execute(stmt)
+            user = result.scalar_one_or_none()
+        return user
+
     async def create_user(self, user_create: UserCreate) -> User:
         async with SessionLocal() as session:
             new_user = User(

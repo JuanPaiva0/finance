@@ -1,4 +1,5 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from app.core.security import login_required
 from app.schemas.Auth import LoginRequest, RegisterRequest
 from app.api.auth.service import AuthService
 
@@ -13,7 +14,7 @@ async def register(register_request: RegisterRequest):
 async def login(login_request: LoginRequest):
     return await service.login(login_request)
 
-@auth_router.post("/refresh")
+@auth_router.post("/refresh", dependencies=[Depends(login_required)])
 async def refresh():
     pass
 
