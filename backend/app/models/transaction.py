@@ -33,10 +33,7 @@ class Transaction(Base):
         nullable=False
     )
 
-    transaction_type = mapped_column(
-        Enum(TransactionType),
-        nullable=False
-    )
+    transaction_type: Mapped[TransactionType] = mapped_column(nullable=False)
 
     transaction_date: Mapped[date] = mapped_column(nullable=False)
 

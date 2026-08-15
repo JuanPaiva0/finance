@@ -1,6 +1,7 @@
 from pydantic import BaseModel, ConfigDict
 from app.enum.Transaction import TransactionType 
 from decimal import Decimal
+from datetime import date
 
 class TransactionBase(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -8,9 +9,11 @@ class TransactionBase(BaseModel):
     description: str | None = None
     amount: Decimal
     transaction_type: TransactionType
+    transaction_date: date
+    category_id: int
     
 class TransactionCreate(TransactionBase):
-    category_id: int
+    pass
 
 class TransactionUpdate(BaseModel):
     model_config = ConfigDict(extra="forbid")
