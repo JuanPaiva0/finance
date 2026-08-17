@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends
 from app.core.security import login_required, get_current_user
 
-from app.models.transaction import Transaction
 from app.schemas.Transaction import TransactionCreate, TransactionUpdate, TransactionOut
 from app.api.transactions.service import TransactionService
 from typing import Sequence

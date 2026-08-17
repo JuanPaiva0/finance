@@ -4,7 +4,6 @@ from app.core.security import login_required, get_current_user
 from app.api.categories.service import CategoryService
 from app.schemas.Category import CategoryCreate, CategoryUpdate, CategoryOut
 from app.api.users.repository import UserRepository
-from app.models.user import User
 
 category_router = APIRouter(prefix="/categories", tags=["categories"], dependencies=[Depends(login_required)])
 service = CategoryService()

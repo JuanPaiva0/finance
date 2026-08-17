@@ -1,6 +1,6 @@
 from app.database.base import Base
 from app.enum.Transaction import TransactionType
-from sqlalchemy import String, ForeignKey, func, Text, Numeric, Enum
+from sqlalchemy import String, ForeignKey, func, Text, Numeric
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import date, datetime
 from decimal import Decimal
