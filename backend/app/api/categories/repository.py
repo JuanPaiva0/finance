@@ -24,23 +24,22 @@ class CategoryRepository:
             categories = result.scalars().all()
             return categories
 
-    async def get_name_categories(self, user_id: int) -> Sequence[str]:
+    async def get_category(self, category_id: int, user_id: int) -> Category | None:
         async with SessionLocal() as session:
-            stmt = select(Category.name).where(Category.user_id == user_id)
-            result = await session.execute(stmt)
-            category_names = result.scalars().all()
-            return category_names
-
-    async def get_category(self, category_id: int) -> Category | None:
-        async with SessionLocal() as session:
-            stmt = select(Category).where(Category.id == category_id)
+            stmt = select(Category).where(
+                Category.id == category_id,
+                Category.user_id == user_id
+            )
             result = await session.execute(stmt)
             category = result.scalar_one_or_none()
             return category
 
-    async def update_category(self, category_id: int, category_update: CategoryUpdate) -> Category | None:
+    async def update_category(self, category_id: int, category_update: CategoryUpdate, user_id: int) -> Category | None:
         async with SessionLocal() as session:
-            stmt = select(Category).where(Category.id == category_id)
+            stmt = select(Category).where(
+                Category.id == category_id,
+                Category.user_id == user_id
+            )
             result = await session.execute(stmt)
             category = result.scalar_one_or_none()
 
@@ -54,9 +53,12 @@ class CategoryRepository:
             await session.refresh(category)
             return category
 
-    async def delete_category(self, category_id: int) -> bool:
+    async def delete_category(self, category_id: int, user_id: int) -> bool:
         async with SessionLocal() as session:
-            stmt = select(Category).where(Category.id == category_id)
+            stmt = select(Category).where(
+                Category.id == category_id,
+                Category.user_id == user_id
+            )
             result = await session.execute(stmt)
             category = result.scalar_one_or_none()
 
@@ -66,3 +68,14 @@ class CategoryRepository:
             await session.delete(category)
             await session.commit()
             return True
+
+    async def get_category_by_name(self, category_name: str, user_id: int) -> Category | None:
+        async with SessionLocal() as session:
+            stmt = select(Category).where(
+                Category.name == category_name,
+                Category.user_id == user_id
+            )
+            result = await session.execute(stmt)
+            category = result.scalar_one_or_none()
+
+            return category
