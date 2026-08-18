@@ -8,7 +8,13 @@ from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import HTTPBearer
 from pydantic import BaseModel
 from app.core.config import settings
+import bcrypt
 
+def hash_password(password: str) -> str:
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
+
+DUMMY_HASH = hash_password("pass_for_timing_protection")
 SECRET = settings.jwt_secret
 ALGORITHM = "HS256"
 
@@ -99,12 +105,10 @@ class JWTBearer(HTTPBearer):
 
         return payload
 
-
 async def get_current_user(
     token: Annotated[TokenPayload, Depends(JWTBearer())]
 ) -> dict[str, int]:
     return {"user_id": int(token.sub)}
-
 
 def login_required(
     current_user: Annotated[dict[str, int], Depends(get_current_user)]

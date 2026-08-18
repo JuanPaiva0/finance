@@ -1,12 +1,9 @@
 from app.schemas.Auth import RegisterRequest, LoginRequest
 from app.api.users.repository import UserRepository
 from app.schemas.User import UserCreate
-from app.core.security import sign_jwt
-
+from app.core.security import sign_jwt, hash_password, DUMMY_HASH
+from app.api.auth.exceptions import UserAlreadyExistsException, InvalidCredentialsException
 import bcrypt
-def hash_password(password: str) -> str:
-    salt = bcrypt.gensalt()
-    return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
 
 class AuthService:
     def __init__(self):
@@ -14,7 +11,7 @@ class AuthService:
 
     async def register(self, register_request: RegisterRequest):
         if (await self.user_repository.get_user_by_email(register_request.email) is not None):
-            raise ValueError("User already exists")
+            raise UserAlreadyExistsException()
 
         hash_pass = hash_password(register_request.password)
 
@@ -29,10 +26,14 @@ class AuthService:
     async def login(self, login_request: LoginRequest):
         user = await self.user_repository.get_user_by_email(login_request.email)
 
-        if user is None:
-            raise ValueError("Invalid email or password!")
+        password_hash = user.password_hash if user else DUMMY_HASH
 
-        if not bcrypt.checkpw(login_request.password.encode('utf-8'), user.password_hash.encode('utf-8')):
-            raise ValueError("Invalid email or password!")
+        is_password_valid = bcrypt.checkpw(
+            login_request.password.encode('utf-8'),
+            password_hash.encode('utf-8')
+        )
+
+        if user is None or not is_password_valid:
+            raise InvalidCredentialsException()
 
         return sign_jwt(user.id)
