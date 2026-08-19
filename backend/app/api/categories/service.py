@@ -27,6 +27,7 @@ class CategoryService:
         if category_update.name is None:
             raise NoFieldsUpdateException()
 
+        #Validação por nome, evita que exista duas categorias com o mesmo nome
         existing_category = await self.category_repository.get_category_by_name(category_update.name, user_id)
         if existing_category and existing_category.id != category_id:
             raise CategoryAlreadyExistsException()

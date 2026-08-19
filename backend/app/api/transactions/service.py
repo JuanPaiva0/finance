@@ -1,5 +1,6 @@
 from app.api.transactions.repository import TransactionRepository
 from app.schemas.Transaction import TransactionCreate, TransactionUpdate
+from app.api.transactions.exceptions import NoFieldsUpdateException, TransactionNotFoundException
 
 class TransactionService:
     def __init__(self):
@@ -12,10 +13,23 @@ class TransactionService:
         return await self.transaction_repository.get_transactions(user_id)
 
     async def get_transaction(self, transaction_id: int, user_id: int):
-        return await self.transaction_repository.get_transaction(transaction_id, user_id)
+        transaction = await self.transaction_repository.get_transaction(transaction_id, user_id)
+        if not transaction:
+            raise TransactionNotFoundException()
+
+        return transaction
 
     async def update_transaction(self, transaction_id: int, transaction_update: TransactionUpdate, user_id: int):
-        return await self.transaction_repository.update_transaction(transaction_id, transaction_update, user_id)
+        if not transaction_update.model_dump(exclude_unset=True):
+            raise NoFieldsUpdateException()
+
+        updated_transaction = await self.transaction_repository.update_transaction(transaction_id, transaction_update, user_id)
+        if not updated_transaction:
+            raise TransactionNotFoundException()
+
+        return updated_transaction
 
     async def delete_transaction(self, transaction_id: int, user_id: int):
-        return await self.transaction_repository.delete_transaction(transaction_id, user_id)
+        success = await self.transaction_repository.delete_transaction(transaction_id, user_id)
+        if not success:
+            raise TransactionNotFoundException()
