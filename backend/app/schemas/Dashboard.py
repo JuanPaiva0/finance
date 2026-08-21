@@ -8,5 +8,5 @@ class MonthlySummaryOut(BaseModel):
 
 
 class CategoryExpenseOut(BaseModel):
-    category: str
+    category_name: str
     total_amount: Decimal

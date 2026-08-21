@@ -4,16 +4,20 @@ from app.models.category import Category
 from app.enum.Transaction import TransactionType
 from sqlalchemy import select, func
 from decimal import Decimal
+from datetime import date
 
 class DashboardRepository:
-    async def get_monthly_summary(self, user_id: int) -> dict:
+    async def get_monthly_summary(self, user_id: int, start_date: date, end_date: date) -> dict:
         async with SessionLocal() as session:
             stmt = (
                 select(
                     Transaction.transaction_type,
                     func.coalesce(func.sum(Transaction.amount), 0).label("total_amount")
                 )
-                .where(Transaction.user_id == user_id)
+                .where(
+                    Transaction.transaction_date.between(start_date, end_date),
+                    Transaction.user_id == user_id
+                )
                 .group_by(Transaction.transaction_type)
             )
 
